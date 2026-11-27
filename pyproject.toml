@@ -1,0 +1,32 @@
+[project]
+name = "scaleway"
+version = "0.0.1"
+requires-python = ">=3.12"
+dependencies = [
+    "dify-plugin>=0.10.2,<0.11.0",
+    "requests>=2.31,<3",
+]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.8"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+# A subset of the rules used by Dify's main repository (api/.ruff.toml).
+select = ["B", "C4", "E", "F", "FURB", "I", "N", "PT", "RUF013", "SIM", "T201", "UP", "W"]
+
+[tool.ruff.lint.per-file-ignores]
+# Command-line scripts report progress with print.
+"scripts/*" = ["T201"]
+
+[tool.pytest.ini_options]
+# Import "models" and "provider" from the plugin root, as Dify does.
+pythonpath = ["."]
+testpaths = ["tests"]
+filterwarnings = [
+    # Raised inside the Dify SDK on import, not by this plugin.
+    "ignore::gevent.monkey.MonkeyPatchWarning",
+    "ignore::pydantic.warnings.PydanticDeprecatedSince20:dify_plugin",
+]

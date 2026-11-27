@@ -1,0 +1,162 @@
+provider: scaleway
+label:
+  en_US: "Scaleway"
+description:
+  en_US: "Chat, text and speech-to-text models provided by Scaleway."
+icon_small:
+  en_US: "scaleway.svg"
+icon_large:
+  en_US: "scaleway-full.svg"
+background: "#E5E7EB"
+help:
+  title:
+    en_US: "Get your API Key from scaleway"
+  url:
+    en_US: "https://www.scaleway.com/en/docs/iam/credentials/create-api-keys/"
+supported_model_types:
+  - llm
+  - text-embedding
+  - speech2text
+configurate_methods:
+  - predefined-model
+  - customizable-model
+
+provider_credential_schema:
+  credential_form_schemas:
+    - variable: api_key
+      label:
+        en_US: API Key
+      type: secret-input
+      required: true
+      placeholder:
+        en_US: Your Scaleway API secret key
+    - variable: project_id
+      label:
+        en_US: Project ID
+      type: text-input
+      required: false
+      placeholder:
+        en_US: Optional. Leave empty to use your default project
+      help:
+        en_US: The Scaleway project to bill. Find it in the Scaleway console under Project settings.
+
+model_credential_schema:
+  model:
+    label:
+      en_US: Model Name
+    placeholder:
+      en_US: A model ID from GET /v1/models
+  credential_form_schemas:
+    - variable: api_key
+      label:
+        en_US: API Key
+      type: secret-input
+      required: true
+      placeholder:
+        en_US: Your Scaleway API secret key
+    - variable: project_id
+      label:
+        en_US: Project ID
+      type: text-input
+      required: false
+      placeholder:
+        en_US: Optional. Leave empty to use your default project
+    - variable: endpoint_url
+      label:
+        en_US: API Base URL
+      type: text-input
+      required: false
+      placeholder:
+        en_US: Optional. For a dedicated deployment, e.g. https://<DEPLOYMENT_ID>.ifr.fr-par.scaleway.com/v1
+      help:
+        en_US: Leave empty for Generative APIs (serverless). When set, it overrides the Project ID.
+    # Chat models
+    - variable: context_size
+      show_on:
+        - variable: __model_type
+          value: llm
+      label:
+        en_US: Context size
+      type: text-input
+      required: true
+      default: "32768"
+    - variable: max_tokens_to_sample
+      show_on:
+        - variable: __model_type
+          value: llm
+      label:
+        en_US: Maximum output tokens
+      type: text-input
+      required: true
+      default: "4096"
+    - variable: function_calling_type
+      show_on:
+        - variable: __model_type
+          value: llm
+      label:
+        en_US: Tool calling
+      type: select
+      required: false
+      default: tool_call
+      options:
+        - value: tool_call
+          label:
+            en_US: Supported
+        - value: no_call
+          label:
+            en_US: Not supported
+    - variable: vision_support
+      show_on:
+        - variable: __model_type
+          value: llm
+      label:
+        en_US: Vision
+      type: select
+      required: false
+      default: not_support
+      options:
+        - value: support
+          label:
+            en_US: Supported
+        - value: not_support
+          label:
+            en_US: Not supported
+    # Embedding models
+    - variable: context_size
+      show_on:
+        - variable: __model_type
+          value: text-embedding
+      label:
+        en_US: Context size
+      type: text-input
+      required: true
+      default: "8192"
+    - variable: max_chunks
+      show_on:
+        - variable: __model_type
+          value: text-embedding
+      label:
+        en_US: Texts per request
+      type: text-input
+      required: false
+      default: "32"
+
+models:
+  llm:
+    predefined:
+      - "models/llm/*.yaml"
+    position: "models/llm/_position.yaml"
+  text_embedding:
+    predefined:
+      - "models/text_embedding/*.yaml"
+  speech2text:
+    predefined:
+      - "models/speech2text/*.yaml"
+      
+extra:
+  python:
+    provider_source: provider/scaleway.py
+    model_sources:
+      - "models/llm/llm.py"
+      - "models/text_embedding/text_embedding.py"
+      - "models/speech2text/speech2text.py"
