@@ -6,6 +6,7 @@ from dify_plugin.errors.model import CredentialsValidateFailedError
 
 from models.common import prepare_credentials
 
+
 class ScalewayModelProvider(ModelProvider):
     def validate_provider_credentials(self, credentials: Mapping) -> None:
         """Check the API key by listing models from /v1/models"""

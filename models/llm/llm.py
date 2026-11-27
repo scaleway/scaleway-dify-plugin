@@ -11,9 +11,10 @@ from models.common import prepare_credentials
 logger = logging.getLogger(__name__)
 
 # Unsupported request fields.
-UNSUPPORTED_PARAMETERS = ("frequency_penalty")
+UNSUPPORTED_PARAMETERS = "frequency_penalty"
 
 TOOL_FEATURES = (ModelFeature.TOOL_CALL, ModelFeature.MULTI_TOOL_CALL)
+
 
 class ScalewayLargeLanguageModel(OAICompatLargeLanguageModel):
     """
@@ -57,7 +58,7 @@ class ScalewayLargeLanguageModel(OAICompatLargeLanguageModel):
             stream,
             None,  # User field is not supported
         )
-   
+
     def get_num_tokens(
         self,
         model: str,
@@ -66,7 +67,7 @@ class ScalewayLargeLanguageModel(OAICompatLargeLanguageModel):
         tools: list[PromptMessageTool] | None = None,
     ) -> int:
         return super().get_num_tokens(model, self._credentials(model, credentials), prompt_messages, tools)
-    
+
     def validate_credentials(self, model: str, credentials: dict) -> None:
         super().validate_credentials(model, self._credentials(model, credentials))
 
@@ -74,4 +75,3 @@ class ScalewayLargeLanguageModel(OAICompatLargeLanguageModel):
         entity = super().get_customizable_model_schema(model, self._credentials(model, credentials))
         entity.parameter_rules = [rule for rule in entity.parameter_rules if rule.name not in UNSUPPORTED_PARAMETERS]
         return entity
-
